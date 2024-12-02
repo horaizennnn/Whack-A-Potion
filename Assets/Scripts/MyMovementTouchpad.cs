@@ -6,7 +6,7 @@ public class MyMovementTouchpad : MonoBehaviour
 {
     public GameObject targetobject;
 
-    public float mspeed = 0.05f;
+    public float mspeed = 0.1f;
     public Vector3 defaultPosition; // Default position of the hammer
 
     Vector2 currentMousePosition;

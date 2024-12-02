@@ -11,34 +11,31 @@ public class PotionBehavior : MonoBehaviour
     // Reference to GameController to call SmashPotion
     public GameController gameController;
 
-    private void OnMouseOver()
+    public void DestroyInstantly()
     {
         if (!isFading)
         {
-            StartCoroutine(FadeAndDestroy());
+            StartCoroutine(FadeAndDestroyInstantly());
         }
     }
 
-    private IEnumerator FadeAndDestroy()
+    public IEnumerator FadeAndDestroyInstantly()
     {
         isFading = true;
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        Color originalColor = sprite.color;
 
-        // Gradually fade out
-        for (float t = 0; t < 1f; t += Time.deltaTime)
-        {
-            sprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, Mathf.Lerp(1f, 0f, t));
-            yield return null;
-        }
+        // Set the alpha to 0 immediately
+        Color currentColor = sprite.color;
+        sprite.color = new Color(currentColor.r, currentColor.g, currentColor.b, 0f);
 
-        // Call SmashPotion when the potion fades and is about to be destroyed
+        // Call SmashPotion instantly
         if (gameController != null && !string.IsNullOrEmpty(potionColor))
         {
             gameController.SmashPotion(potionColor); // Pass the potion color
         }
 
-        // Destroy the object after fading out
+        // Destroy the object immediately after fading
         Destroy(gameObject);
+        yield return null;
     }
 }
