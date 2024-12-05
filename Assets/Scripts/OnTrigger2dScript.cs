@@ -10,10 +10,17 @@ public class OnTrigger2dScript : MonoBehaviour
     private SpriteRenderer hammerRenderer;
     private bool isTriggering = false;
 
+    [SerializeField]
+    private AudioClip smashSound; // Sound effect for smashing
+    private AudioSource audioSource; // Audio source component
+
     void Start()
     {
         // Get the SpriteRenderer component from the hammer object (you can set this reference in the Inspector too)
-        hammerRenderer = GetComponent<SpriteRenderer>(); 
+        hammerRenderer = GetComponent<SpriteRenderer>();
+
+        // Add or get the AudioSource component
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -26,6 +33,9 @@ public class OnTrigger2dScript : MonoBehaviour
             potionBehavior.DestroyInstantly(); // Call instant destroy method
             Instantiate(explosion, transform.position, Quaternion.identity); // Instantiate explosion effect
             Debug.Log("Potion triggered");
+
+            // Play the smash sound
+            PlaySmashSound();
 
             // Start the hammer animation to simulate the smashing effect (1 -> 4)
             isTriggering = true;
@@ -51,7 +61,7 @@ public class OnTrigger2dScript : MonoBehaviour
             for (int i = 0; i < hammerSprites.Length; i++)
             {
                 hammerRenderer.sprite = hammerSprites[i];
-                yield return new WaitForSeconds(0.05f); // Adjust time between frames
+                yield return new WaitForSeconds(0.01f); // Adjust time between frames
             }
         }
         else
@@ -60,8 +70,17 @@ public class OnTrigger2dScript : MonoBehaviour
             for (int i = hammerSprites.Length - 1; i >= 0; i--)
             {
                 hammerRenderer.sprite = hammerSprites[i];
-                yield return new WaitForSeconds(0.05f); // Adjust time between frames
+                yield return new WaitForSeconds(0.01f); // Adjust time between frames
             }
+        }
+    }
+
+    // Method to play the smash sound
+    private void PlaySmashSound()
+    {
+        if (audioSource != null && smashSound != null)
+        {
+            audioSource.PlayOneShot(smashSound);
         }
     }
 }
