@@ -38,12 +38,12 @@ public class GameController : MonoBehaviour
     public List<string> smashedPotions = new List<string>();
     public List<string> unsmashedPotions = new List<string>();
 
-    private string targetColor;
+    public string targetColor;
 
     private void Start()
     {
         targetColor = ChooseRandomTargetColor();
-        targetColorText.text = $"Target Color: {targetColor}";
+        targetColorText.text = $"{targetColor}";
         SetTargetColorImage(targetColor);
 
         SpawnPotions();
@@ -65,7 +65,7 @@ public class GameController : MonoBehaviour
         gameText.text = Mathf.CeilToInt(gameTime).ToString();
     }
 
-    private string ChooseRandomTargetColor()
+    public string ChooseRandomTargetColor()
     {
         List<string> targetColors = new List<string>(colorCombinations.Keys);
         return targetColors[Random.Range(0, targetColors.Count)];
@@ -185,11 +185,14 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private List<string> GetCorrectPotionCombinations(string targetColor) => targetColor switch
+    public List<string> GetCorrectPotionCombinations(string targetColor)
     {
-        "Purple" => new List<string> { "Red", "Blue" },
-        "Orange" => new List<string> { "Red", "Yellow" },
-        "Green" => new List<string> { "Blue", "Yellow" },
-        _ => new List<string>()
-    };
+        return targetColor switch
+        {
+            "Purple" => new List<string> { "Red", "Blue" },
+            "Orange" => new List<string> { "Red", "Yellow" },
+            "Green" => new List<string> { "Blue", "Yellow" },
+            _ => new List<string>()
+        };
+    }
 }
