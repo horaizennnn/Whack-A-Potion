@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      2_5d_many_potions_in_table_ham_0: -6220499911974563975
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

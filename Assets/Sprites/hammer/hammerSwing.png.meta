@@ -248,7 +248,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      hammerSwing_0: -4048797502373952817
+      hammerSwing_1: -8829630287725028490
+      hammerSwing_2: -892208010654137673
+      hammerSwing_3: 8323307530318970024
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
