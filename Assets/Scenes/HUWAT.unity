@@ -813,6 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5053f5707de7b64ebab64626af01bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  touchpadController: {fileID: 887448274}
   potionPrefabs:
   - {fileID: 5371543415363918162, guid: 5b71a3b555adc0b448d5487711e6239f, type: 3}
   - {fileID: 4737990331463372784, guid: 5c38d30543957024fac4bdc9db3fcd47, type: 3}
@@ -1003,6 +1004,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86d24d5180703374bb0a750bfb03b518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  YouWinPanel: {fileID: 0}
+  YouLosePanel: {fileID: 0}
 --- !u!1 &887448270
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,8 +2367,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -267, y: 408}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: -294.70917, y: 440.74}
+  m_SizeDelta: {x: 270.0314, y: 105.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1687904825
 MonoBehaviour:
@@ -2455,8 +2458,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3248,6 +3251,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86d24d5180703374bb0a750bfb03b518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  YouWinPanel: {fileID: 0}
+  YouLosePanel: {fileID: 0}
 --- !u!1 &2043492522
 GameObject:
   m_ObjectHideFlags: 0

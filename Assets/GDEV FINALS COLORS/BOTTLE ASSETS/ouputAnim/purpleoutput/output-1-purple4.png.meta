@@ -116,12 +116,12 @@ TextureImporter:
       name: output-1-purple4_0
       rect:
         serializedVersion: 2
-        x: 19
-        y: 0
-        width: 282
-        height: 370
+        x: 0
+        y: 3
+        width: 320
+        height: 367
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5674a1ad127c4814cb18286397a92311
     internalID: 0
     vertices: []
     indices: 

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    // Add a reference to the MyMovementTouchpad instance
+    public MyMovementTouchpad touchpadController;
+
     // The potion prefabs for different colors
     public GameObject[] potionPrefabs;
     public GameObject[] pipePrefabs;
@@ -46,6 +49,8 @@ public class GameController : MonoBehaviour
         targetColorText.text = $"{targetColor}";
         SetTargetColorImage(targetColor);
 
+        RandomizeSpawnPoints(); // Shuffle the spawn points
+
         SpawnPotions();
         SpawnPipes();
         SpawnLights();
@@ -60,9 +65,22 @@ public class GameController : MonoBehaviour
         {
             gameTime = 0;
             EndGame();
+            DisableTouchpad(); // Disable the touchpad when the timer ends
         }
 
         gameText.text = Mathf.CeilToInt(gameTime).ToString();
+    }
+
+    private void DisableTouchpad()
+    {
+        if (touchpadController != null)
+        {
+            touchpadController.DeactivateTouchpad();
+        }
+        else
+        {
+            Debug.LogWarning("Touchpad controller is not assigned!");
+        }
     }
 
     public string ChooseRandomTargetColor()
@@ -85,6 +103,22 @@ public class GameController : MonoBehaviour
             targetColorImage.sprite = targetSprite;
         else
             Debug.LogWarning($"No sprite found for {color}");
+    }
+
+    private void RandomizeSpawnPoints()
+    {
+        // Generate a list of indices corresponding to the spawn points
+        List<int> indices = Enumerable.Range(0, potionSpawnPoints.Length).ToList();
+
+        // Shuffle the indices
+        indices = indices.OrderBy(x => Random.value).ToList();
+
+        // Reorder the spawn points based on the shuffled indices
+        potionSpawnPoints = indices.Select(i => potionSpawnPoints[i]).ToArray();
+        pipeSpawnPoints = indices.Select(i => pipeSpawnPoints[i]).ToArray();
+        lightSpawnPoints = indices.Select(i => lightSpawnPoints[i]).ToArray();
+
+        Debug.Log("Spawn points randomized in consistent order.");
     }
 
     private void SpawnPotions()

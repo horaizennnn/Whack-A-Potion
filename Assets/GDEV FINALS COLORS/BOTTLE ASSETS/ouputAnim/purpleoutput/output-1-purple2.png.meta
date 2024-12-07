@@ -116,37 +116,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: output-1-purple2_0
-      rect:
-        serializedVersion: 2
-        x: 149
-        y: 329
-        width: 32
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e66b4d5c38f988e70800000000000000
-      internalID: 9117712833920153198
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: output-1-purple2_1
       rect:
         serializedVersion: 2
-        x: 19
+        x: 0
         y: 0
-        width: 282
-        height: 281
+        width: 320
+        height: 370
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -163,7 +141,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b5e6e03ea6a4b7245b8460c45cb6c81a
     internalID: 0
     vertices: []
     indices: 

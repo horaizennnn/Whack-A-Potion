@@ -38,7 +38,7 @@ public class ContainerAnimation : MonoBehaviour
 
     private IEnumerator TriggerAnimationWithCondition()
     {
-        yield return new WaitForSeconds(1f); // Wait for 6 seconds
+        yield return new WaitForSeconds(6f); // Wait for 6 seconds
 
         // Check if the potion combination is correct
         if (IsCorrectCombination())
