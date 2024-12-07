@@ -7,108 +7,55 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     // The potion prefabs for different colors
-    public GameObject[] potionPrefabs;  // Array for potion prefabs (each color has its own prefab)
+    public GameObject[] potionPrefabs;
+    public GameObject[] pipePrefabs;
+    public Transform[] potionSpawnPoints;
+    public Transform[] pipeSpawnPoints;
 
-    // The pipe prefabs array (3 pipes, one for each spawn point)
-    public GameObject[] pipePrefabs;  // Array of pipe prefabs
+    // New: Light prefabs and spawn points
+    public GameObject[] lightPrefabs;  // Light prefabs
+    public Transform[] lightSpawnPoints;  // Light spawn points
 
-    // The spawn points for the potions (these positions will remain unchanged)
-    public Transform[] potionSpawnPoints;  // Spawn points for potions
-
-    // The spawn points for the pipes (this is for the pipes only)
-    public Transform[] pipeSpawnPoints;  // Separate spawn points for pipes
-
-    // The UI text for the target color and result
+    // UI elements
     public TMP_Text targetColorText;
     public TMP_Text resultText;
+    public Image targetColorImage;
+    public Sprite[] targetColorImages;
 
-    // Add a reference to the Image component for displaying the target color
-    public Image targetColorImage;  // The UI Image where the target color will be shown
-
-    // Add a list of images to represent each target color
-    public Sprite[] targetColorImages;  // Array to hold images for each target color
-
-    // Timer for the game
+    // Timer
     public float gameTime = 20f;
     public TMP_Text gameText;
 
-    // List to store the remaining potions that the player did not hit
     private List<string> potionsRemaining = new List<string>();
-
-    // Dictionary of target colors and their corresponding potion combinations (colors that should NOT be hit)
-    private Dictionary<string, List<string[]>> colorCombinations = new Dictionary<string, List<string[]>>()
+    private Dictionary<string, List<string[]>> colorCombinations = new Dictionary<string, List<string[]>>
     {
-        { "Purple", new List<string[]>{ new string[]{ "Red", "Blue" } } },  // Purple
-        { "Orange", new List<string[]>{ new string[]{ "Red", "Yellow" } } },  // Orange
-        { "Green", new List<string[]>{ new string[]{ "Blue", "Yellow" } } },  // Green
+        { "Purple", new List<string[]> { new string[] { "Red", "Blue" } } },
+        { "Orange", new List<string[]> { new string[] { "Red", "Yellow" } } },
+        { "Green", new List<string[]> { new string[] { "Blue", "Yellow" } } }
     };
+    private List<string> otherColors = new List<string> { "Red", "Blue", "Yellow" };
 
-    // Other colors that are not part of the target/result combinations
-    private List<string> otherColors = new List<string>
-    {
-        "Red", "Blue", "Yellow"
-    };
-
-    public List<string> smashedPotions = new List<string>();  // Track smashed potions
-    public List<string> unsmashedPotions = new List<string>();  // Track unsmashed potions
+    public List<string> smashedPotions = new List<string>();
+    public List<string> unsmashedPotions = new List<string>();
 
     private string targetColor;
 
     private void Start()
     {
-        // Randomly choose a target color at the start of the game
         targetColor = ChooseRandomTargetColor();
-
-        // Display the target color name (not the hex code)
         targetColorText.text = $"Target Color: {targetColor}";
-
-        // Set the target color image (based on the target color)
         SetTargetColorImage(targetColor);
 
-        // Spawn potions at specific positions (one potion per position)
         SpawnPotions();
-
-        // Instantiate pipes to match the order of potion colors
         SpawnPipes();
+        SpawnLights();
 
-        // Initialize unsmashed potions at the start of the game
         unsmashedPotions = new List<string>(potionsRemaining);
-    }
-
-    // Method to set the target color image based on the selected color
-    private void SetTargetColorImage(string color)
-    {
-        Sprite targetSprite = null;
-
-        // Check the color and assign the appropriate sprite from the array
-        switch (color)
-        {
-            case "Purple":
-                targetSprite = targetColorImages[0];  // First image in the array
-                break;
-            case "Orange":
-                targetSprite = targetColorImages[1];  // Second image in the array
-                break;
-            case "Green":
-                targetSprite = targetColorImages[2];  // Third image in the array
-                break;
-            default:
-                Debug.LogWarning($"No sprite found for {color}");
-                break;
-        }
-
-        // If a sprite is found, set it to the target color image
-        if (targetSprite != null)
-        {
-            targetColorImage.sprite = targetSprite;
-        }
     }
 
     private void Update()
     {
-        // Decrease the game timer and update the timer text
         gameTime -= Time.deltaTime;
-
         if (gameTime <= 0)
         {
             gameTime = 0;
@@ -118,112 +65,98 @@ public class GameController : MonoBehaviour
         gameText.text = Mathf.CeilToInt(gameTime).ToString();
     }
 
-    // Choose a random target color from the list of target colors
     private string ChooseRandomTargetColor()
     {
         List<string> targetColors = new List<string>(colorCombinations.Keys);
         return targetColors[Random.Range(0, targetColors.Count)];
     }
 
-    // Spawn potions at specific spawn points (one potion color per position)
-    public void SpawnPotions()
+    private void SetTargetColorImage(string color)
     {
-        // Create a list of all available colors to spawn (including the target color's components)
-        List<string> colorsToSpawn = new List<string>(otherColors);
+        Sprite targetSprite = color switch
+        {
+            "Purple" => targetColorImages[0],
+            "Orange" => targetColorImages[1],
+            "Green" => targetColorImages[2],
+            _ => null
+        };
 
-        // Get the correct potion combinations for the target color
+        if (targetSprite != null)
+            targetColorImage.sprite = targetSprite;
+        else
+            Debug.LogWarning($"No sprite found for {color}");
+    }
+
+    private void SpawnPotions()
+    {
+        List<string> colorsToSpawn = new List<string>(otherColors);
         List<string> correctColors = GetCorrectPotionCombinations(targetColor);
 
-        // Add the correct colors to the list before shuffling
-        bool correctColorsPresent = false;
-
-        // Repeat until both correct colors are in the list of 3 potions
-        while (!correctColorsPresent)
+        while (!correctColors.All(color => colorsToSpawn.Contains(color)))
         {
-            // Shuffle the list of colors
-            colorsToSpawn = colorsToSpawn.OrderBy(x => Random.value).ToList();
-
-            // Ensure we have 3 unique colors by taking distinct ones
-            colorsToSpawn = colorsToSpawn.Distinct().Take(3).ToList();
-
-            // Check if both correct colors are in the shuffled list
-            correctColorsPresent = correctColors.All(color => colorsToSpawn.Contains(color));
-
-            if (!correctColorsPresent)
-            {
+            colorsToSpawn = colorsToSpawn.OrderBy(x => Random.value).Distinct().Take(3).ToList();
+            if (!correctColors.All(color => colorsToSpawn.Contains(color)))
                 colorsToSpawn.Clear();
-                colorsToSpawn.AddRange(otherColors);
-            }
         }
 
-        // Now spawn the potions at the spawn points (ensure one potion per position)
         for (int i = 0; i < potionSpawnPoints.Length; i++)
         {
             string color = colorsToSpawn[i];
-
-            // Add the color to the list of remaining potions
             potionsRemaining.Add(color);
 
-            // Instantiate the corresponding potion prefab at the correct spawn point
             GameObject potionPrefab = GetPotionPrefabByColor(color);
             GameObject potionInstance = Instantiate(potionPrefab, potionSpawnPoints[i].position, Quaternion.identity);
 
-            // Set the potion color in the potion behavior
-            PotionBehavior potionBehavior = potionInstance.GetComponent<PotionBehavior>();
-            if (potionBehavior != null)
+            if (potionInstance.TryGetComponent(out PotionBehavior potionBehavior))
             {
-                potionBehavior.potionColor = color; // Set the color of the potion
-                potionBehavior.gameController = this; // Assign the game controller to the potion behavior
+                potionBehavior.potionColor = color;
+                potionBehavior.gameController = this;
             }
         }
     }
 
-    // Spawn pipes based on the order of potions
     private void SpawnPipes()
     {
         for (int i = 0; i < pipeSpawnPoints.Length; i++)
         {
-            // Ensure we have matching pipes and potions
             if (i < potionsRemaining.Count && i < pipePrefabs.Length)
             {
                 string potionColor = potionsRemaining[i];
-
-                // Get the corresponding pipe prefab based on potion color
                 GameObject pipePrefab = GetPipePrefabByColor(potionColor);
 
                 if (pipePrefab != null)
-                {
                     Instantiate(pipePrefab, pipeSpawnPoints[i].position, Quaternion.identity);
-                }
             }
         }
     }
 
-    // Get the appropriate potion prefab based on the color
-    private GameObject GetPotionPrefabByColor(string color)
+    private void SpawnLights()
     {
-        switch (color)
+        for (int i = 0; i < lightSpawnPoints.Length; i++)
         {
-            case "Red": return potionPrefabs[0];  // Red
-            case "Blue": return potionPrefabs[1];  // Blue
-            case "Yellow": return potionPrefabs[2];  // Yellow
-            default: return null; // Default case, should never hit
+            if (i < lightPrefabs.Length)
+            {
+                Instantiate(lightPrefabs[i], lightSpawnPoints[i].position, Quaternion.identity);
+            }
         }
     }
 
-    // Get the appropriate pipe prefab based on the potion color
-    private GameObject GetPipePrefabByColor(string color)
+    private GameObject GetPotionPrefabByColor(string color) => color switch
     {
-        switch (color)
-        {
-            case "Red": return pipePrefabs[0];  // Pipe for Red
-            case "Blue": return pipePrefabs[1];  // Pipe for Blue
-            case "Yellow": return pipePrefabs[2];  // Pipe for Yellow
-            default: return null; // Default case, should never hit
-        }
-    }
+        "Red" => potionPrefabs[0],
+        "Blue" => potionPrefabs[1],
+        "Yellow" => potionPrefabs[2],
+        _ => null
+    };
 
-    // Method to be called when a potion is smashed
+    private GameObject GetPipePrefabByColor(string color) => color switch
+    {
+        "Red" => pipePrefabs[0],
+        "Blue" => pipePrefabs[1],
+        "Yellow" => pipePrefabs[2],
+        _ => null
+    };
+
     public void SmashPotion(string potionColor)
     {
         if (unsmashedPotions.Contains(potionColor))
@@ -233,48 +166,30 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Method to calculate and display the success rate when the game ends
     private void EndGame()
     {
         List<string> correctColors = GetCorrectPotionCombinations(targetColor);
         int correctLeft = unsmashedPotions.Count(potion => correctColors.Contains(potion));
-        List<string> incorrectColors = otherColors.Except(correctColors).ToList();
-        int incorrectLeft = unsmashedPotions.Count(potion => incorrectColors.Contains(potion));
-        int totalRemaining = correctLeft + incorrectLeft;
+        int incorrectLeft = unsmashedPotions.Count(potion => otherColors.Except(correctColors).Contains(potion));
 
         if (correctLeft == 2 && incorrectLeft == 0)
-        {
             resultText.text = "Success Rate: 100%! You got it! Go to the next round!";
-        }
         else if (correctLeft == 1 && incorrectLeft == 0)
-        {
             resultText.text = "Success Rate: 50%! You're half close :o try again!";
-        }
         else if (correctLeft == 0 || (correctLeft == 2 && incorrectLeft == 1))
-        {
             resultText.text = "Success Rate: 0%! C'mon whack a potion, Try Again!";
-        }
         else
         {
-            int successRate = (correctLeft * 100) / totalRemaining;
+            int successRate = (correctLeft * 100) / (correctLeft + incorrectLeft);
             resultText.text = $"Success Rate: {successRate}%!";
-
         }
     }
 
-    // Get the correct potions for the target color (color combinations that should not be hit)
-    private List<string> GetCorrectPotionCombinations(string targetColor)
+    private List<string> GetCorrectPotionCombinations(string targetColor) => targetColor switch
     {
-        switch (targetColor)
-        {
-            case "Purple":
-                return new List<string> { "Red", "Blue" };
-            case "Orange":
-                return new List<string> { "Red", "Yellow" };
-            case "Green":
-                return new List<string> { "Blue", "Yellow" };
-            default:
-                return new List<string>();
-        }
-    }
+        "Purple" => new List<string> { "Red", "Blue" },
+        "Orange" => new List<string> { "Red", "Yellow" },
+        "Green" => new List<string> { "Blue", "Yellow" },
+        _ => new List<string>()
+    };
 }

@@ -99,7 +99,7 @@ public class OnTrigger2dScript : MonoBehaviour
         if (isSmashing)
         {
             // Animate from sprite 1 to 4
-            for (int i = 0; i < hammerSprites.Length; i++)
+            for (int i = 1; i < hammerSprites.Length; i++)
             {
                 hammerRenderer.sprite = hammerSprites[i];
                 yield return new WaitForSeconds(0.01f); // Adjust time between frames

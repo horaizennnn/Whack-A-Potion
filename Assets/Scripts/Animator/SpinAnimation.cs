@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections; // Add this to enable IEnumerator
 
 public class SpinAnimation : MonoBehaviour
 {
@@ -37,6 +38,8 @@ public class SpinAnimation : MonoBehaviour
             {
                 mAnimator.SetTrigger("TrSpinning");
                 mAnimator.SetTrigger("TrDraining");
+                StartCoroutine(TriggerLightWithDelay()); // Start the coroutine for delayed TrLight trigger
+                StartCoroutine(TriggerLoadingWithDelay()); // Start the coroutine for delayed TrLoading trigger
                 hasTriggered = true; // Mark as triggered to prevent multiple activations
             }
         }
@@ -50,6 +53,22 @@ public class SpinAnimation : MonoBehaviour
                 Debug.Log("Spin animation is playing.");
             }
         }
+    }
+
+    // Coroutine to trigger TrLight after a 3-second delay
+    private IEnumerator TriggerLightWithDelay()
+    {
+        yield return new WaitForSeconds(3f); // Wait for 3 seconds
+        mAnimator.SetTrigger("TrLight");
+        Debug.Log("TrLight triggered after 3-second delay.");
+    }
+
+    // Coroutine to trigger TrLoading after a 4-second delay
+    private IEnumerator TriggerLoadingWithDelay()
+    {
+        yield return new WaitForSeconds(4f); // Wait for 4 seconds
+        mAnimator.SetTrigger("TrLoading");
+        Debug.Log("TrLoading triggered after 4-second delay.");
     }
 
     // Helper method to extract the potion color from the prefab name
